@@ -24,6 +24,22 @@ public class GatewayConfig {
                         )
                         .uri("lb://AUTH-SERVICE")
                 )
+                .route("resume-service", r -> r
+                        .path("/resume-service/**")
+                        .filters(f -> f
+                                .stripPrefix(1)
+                                .filter(jwtAuthenticationFilter.apply(new Object()))
+                        )
+                        .uri("lb://RESUME-SERVICE")
+                )
+                .route("job-tracker-service", r -> r
+                .path("/job-tracker-service/**")
+                .filters(f -> f
+                        .stripPrefix(1)
+                        .filter(jwtAuthenticationFilter.apply(new Object()))
+                )
+                .uri("lb://JOB-TRACKER-SERVICE")
+)
                 .build();
     }
 }

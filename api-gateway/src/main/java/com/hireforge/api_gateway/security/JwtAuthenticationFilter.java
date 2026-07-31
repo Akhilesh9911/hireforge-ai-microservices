@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -40,7 +41,14 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<Object
                 return exchange.getResponse().setComplete();
             }
 
-            return chain.filter(exchange);
+            Long userId = jwtUtil.getUserId(token);
+
+            ServerHttpRequest mutatedRequest = exchange.getRequest()
+                    .mutate()
+                    .header("X-User-Id", String.valueOf(userId))
+                    .build();
+
+            return chain.filter(exchange.mutate().request(mutatedRequest).build());
         };
     }
 }

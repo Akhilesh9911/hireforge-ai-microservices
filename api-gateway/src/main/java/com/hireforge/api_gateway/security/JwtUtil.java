@@ -28,4 +28,13 @@ public class JwtUtil {
             return false;
         }
     }
+
+    public Long getUserId(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("userId", Long.class);
+    }
 }
