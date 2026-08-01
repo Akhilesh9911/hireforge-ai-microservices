@@ -40,6 +40,14 @@ public class GatewayConfig {
                 )
                 .uri("lb://JOB-TRACKER-SERVICE")
 )
+                .route("interview-service", r -> r
+                        .path("/interview-service/**")
+                        .filters(f -> f
+                                .stripPrefix(1)
+                                .filter(jwtAuthenticationFilter.apply(new Object()))
+                        )
+                        .uri("lb://INTERVIEW-SERVICE")
+                )
                 .build();
     }
 }
