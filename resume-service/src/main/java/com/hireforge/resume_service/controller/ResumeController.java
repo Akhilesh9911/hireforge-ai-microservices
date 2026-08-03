@@ -2,7 +2,6 @@ package com.hireforge.resume_service.controller;
 
 import com.hireforge.resume_service.dto.ResumeAnalysisResponse;
 import com.hireforge.resume_service.service.ResumeService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,10 +10,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/resume")
-@RequiredArgsConstructor
 public class ResumeController {
 
     private final ResumeService resumeService;
+
+    public ResumeController(ResumeService resumeService) {
+        this.resumeService = resumeService;
+    }
 
     @PostMapping("/analyze")
     public ResponseEntity<ResumeAnalysisResponse> analyzeResume(

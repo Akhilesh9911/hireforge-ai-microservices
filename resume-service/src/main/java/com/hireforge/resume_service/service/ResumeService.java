@@ -3,7 +3,6 @@ package com.hireforge.resume_service.service;
 import com.hireforge.resume_service.dto.ResumeAnalysisResponse;
 import com.hireforge.resume_service.entity.ResumeAnalysis;
 import com.hireforge.resume_service.repository.ResumeAnalysisRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -12,12 +11,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-@RequiredArgsConstructor
 public class ResumeService {
 
     private final FileParserService fileParserService;
     private final GeminiService geminiService;
     private final ResumeAnalysisRepository repository;
+
+    public ResumeService(FileParserService fileParserService, GeminiService geminiService, ResumeAnalysisRepository repository) {
+        this.fileParserService = fileParserService;
+        this.geminiService = geminiService;
+        this.repository = repository;
+    }
 
     public ResumeAnalysisResponse analyzeResume(MultipartFile file, Long userId) throws IOException {
         String extractedText = fileParserService.extractText(file);
