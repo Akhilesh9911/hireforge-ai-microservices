@@ -1,5 +1,7 @@
 # HireForge AI — Microservices Backend
 
+![CI](https://github.com/Akhilesh9911/hireforge-ai-microservices/actions/workflows/ci.yml/badge.svg)
+
 An AI-powered career platform built with a microservices architecture. Each service is independently deployable, has its own database, and communicates through an API Gateway with JWT-based authentication.
 
 ---
@@ -53,6 +55,8 @@ Gateway uses load-balanced routing (lb://SERVICE-NAME)
 - **Apache PDFBox 3.0.3** — PDF text extraction
 - **Apache POI 5.3.0** — DOCX text extraction
 - **Google Gemini AI** — ATS scoring, missing skills, interview question generation
+- **Docker + Docker Compose** — containerized local development
+- **GitHub Actions** — CI/CD pipeline (Maven build + Docker build verify)
 - **RestTemplate** — Gemini API HTTP calls
 
 ---
@@ -64,6 +68,28 @@ Gateway uses load-balanced routing (lb://SERVICE-NAME)
 - **Reactive Gateway** — spring-cloud-starter-gateway (WebFlux), not MVC
 - **Java DSL routing** — properties-based routing avoided for reliability
 - **Spring Boot 3.3.5 + Spring Cloud 2023.0.3 pinned** — stable combination, never upgrade
+
+---
+
+## CI/CD Pipeline
+
+GitHub Actions pipeline triggers on every push to `main`.
+
+**Matrix Build** — all 6 services build in parallel:
+- Maven clean package (`-DskipTests`) for each service
+- Docker image build verify for each service
+
+```
+push to main
+      ↓
+Matrix: Build (6 parallel)      →     Matrix: Docker Verify (6 parallel)
+├── eureka-server                      ├── eureka-server
+├── api-gateway                        ├── api-gateway
+├── auth-service                       ├── auth-service
+├── resume-service                     ├── resume-service
+├── job-tracker-service                ├── job-tracker-service
+└── interview-service                  └── interview-service
+```
 
 ---
 
@@ -103,6 +129,59 @@ Body: `multipart/form-data` — `file` (PDF or DOCX), `jobRole` (Text)
 
 ---
 
+## Local Setup
+
+### Prerequisites
+- Java 17
+- Maven
+- Docker Desktop
+- Google Gemini API key
+
+---
+
+### Option 1: Docker Compose (Recommended)
+
+Create a `.env` file in the project root:
+
+```env
+DB_USERNAME=root
+DB_PASSWORD=your_password
+JWT_SECRET=your_jwt_secret
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+Then run:
+
+```bash
+docker-compose up --build
+```
+
+All 6 services + MySQL start automatically in the correct order.
+
+Verify all services registered: `http://localhost:8761`
+
+---
+
+### Option 2: Run Individually in IntelliJ
+
+#### Prerequisites
+- MySQL running locally
+- Environment variables set in IntelliJ Run Configurations for each service
+
+#### Startup Order
+```
+1. Eureka Server      (8761)
+2. Auth Service       (8081)
+3. Resume Service     (8082)
+4. Job Tracker        (8083)
+5. Interview Service  (8084)
+6. API Gateway        (8080)  ← always last
+```
+
+Databases are created automatically on first startup (`createDatabaseIfNotExist=true`).
+
+---
+
 ## Environment Variables
 
 ### Auth Service
@@ -139,37 +218,11 @@ Body: `multipart/form-data` — `file` (PDF or DOCX), `jobRole` (Text)
 
 ---
 
-## Local Setup
-
-### Prerequisites
-- Java 17
-- Maven
-- MySQL running locally
-- Google Gemini API key
-
-### Startup Order
-```
-1. Eureka Server      (8761)
-2. Auth Service       (8081)
-3. Resume Service     (8082)
-4. Job Tracker        (8083)
-5. Interview Service  (8084)
-6. API Gateway        (8080)  ← always last
-```
-
-Each service needs its environment variables set in IntelliJ Run Configurations before starting.
-
-Databases are created automatically on first startup (`createDatabaseIfNotExist=true`).
-
-### Verify All Services Running
-Open Eureka Dashboard: `http://localhost:8761`
-
-You should see all five services registered with status UP.
-
----
-
 ## Related Repository
 
-**HireForge AI Monolith** (complete, live on Railway):
+**HireForge AI — Monolith** (complete, live on Railway):
+
+This project was originally built as a monolith to validate all core features end-to-end, then re-architected into microservices to demonstrate production-grade backend design.
+
 - GitHub: [github.com/Akhilesh9911/hireforge-ai](https://github.com/Akhilesh9911/hireforge-ai)
 - Live: [hireforge-ai-production.up.railway.app](https://hireforge-ai-production.up.railway.app)
