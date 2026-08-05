@@ -220,9 +220,6 @@ Databases are created automatically on first startup (`createDatabaseIfNotExist=
 
 ## Related Repository
 
-**HireForge AI — Monolith** (complete, live on Railway):
-
-This project was originally built as a monolith to validate all core features end-to-end, then re-architected into microservices to demonstrate production-grade backend design.
-
+**HireForge AI Monolith** (complete, live on Render):
 - GitHub: [github.com/Akhilesh9911/hireforge-ai](https://github.com/Akhilesh9911/hireforge-ai)
-- Live: [hireforge-ai-production.up.railway.app](https://hireforge-ai-production.up.railway.app)
+- Live: [hireforge-ai-mqul.onrender.com](https://hireforge-ai-mqul.onrender.com)
