@@ -69,7 +69,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: mvn clean package -DskipTests
+        run: mvn clean package -Dtest='!*ApplicationTests' -Dsurefire.failIfNoSpecifiedTests=false
 
       - name: Docker image build verify
         working-directory: ${{ matrix.service }}
