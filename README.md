@@ -136,12 +136,12 @@ Unit tests (JUnit 5 + Mockito) run automatically on every push to `main` via Git
 
 | Service | Class | Tests | What is covered |
 |---------|-------|-------|-----------------|
-| auth-service | AuthService | 5 | Register and login flows, duplicate email, wrong password |
-| auth-service | JwtUtil | 6 | Token generation, validation, expired, forged and malformed tokens |
-| resume-service | ResumeService | 6 | Resume analysis flow, ATS score parsing, per-user history |
-| resume-service | FileParserService | 5 | PDF/DOCX text extraction, unsupported and corrupt files |
+| auth-service | AuthService | 5     | Register and login flows, duplicate email, wrong password |
+| auth-service | JwtUtil | 6     | Token generation, validation, expired, forged and malformed tokens |
+| resume-service | ResumeService | 6     | Resume analysis flow, ATS score parsing, per-user history |
+| resume-service | FileParserService | 6     | PDF/DOCX text extraction, unsupported and corrupt files |
 
-**Total: 22 unit tests.**
+**Total: 23 unit tests.**
 
 Run locally (inside a service folder):
 

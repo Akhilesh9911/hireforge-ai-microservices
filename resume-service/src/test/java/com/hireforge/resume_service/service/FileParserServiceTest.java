@@ -115,4 +115,15 @@ class FileParserServiceTest {
             fileParserService.extractText(file);
         });
     }
+
+    @Test
+    void extractText_ShouldReturnText_WhenExtensionIsUpperCase() throws IOException {
+        byte[] pdfBytes = createPdfBytes("Uppercase Extension Resume");
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "RESUME.PDF", "application/pdf", pdfBytes);
+
+        String result = fileParserService.extractText(file);
+
+        assertTrue(result.contains("Uppercase Extension Resume"));
+    }
 }

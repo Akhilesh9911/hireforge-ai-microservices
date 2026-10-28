@@ -18,9 +18,11 @@ public class FileParserService {
             throw new IllegalArgumentException("File name is null");
         }
 
-        if (filename.endsWith(".pdf")) {
+        String lowerCaseName = filename.toLowerCase();
+
+        if (lowerCaseName.endsWith(".pdf")) {
             return extractFromPdf(file);
-        } else if (filename.endsWith(".docx")) {
+        } else if (lowerCaseName.endsWith(".docx")) {
             return extractFromDocx(file);
         } else {
             throw new IllegalArgumentException("Only PDF and DOCX files are supported");
@@ -28,20 +30,19 @@ public class FileParserService {
     }
 
     private String extractFromPdf(MultipartFile file) throws IOException {
-        PDDocument document = Loader.loadPDF(file.getBytes());
-        PDFTextStripper stripper = new PDFTextStripper();
-        String text = stripper.getText(document);
-        document.close();
-        return text;
+        try (PDDocument document = Loader.loadPDF(file.getBytes())) {
+            PDFTextStripper stripper = new PDFTextStripper();
+            return stripper.getText(document);
+        }
     }
 
     private String extractFromDocx(MultipartFile file) throws IOException {
-        XWPFDocument document = new XWPFDocument(file.getInputStream());
-        StringBuilder text = new StringBuilder();
-        document.getParagraphs().forEach(paragraph -> {
-            text.append(paragraph.getText()).append("\n");
-        });
-        document.close();
-        return text.toString();
+        try (XWPFDocument document = new XWPFDocument(file.getInputStream())) {
+            StringBuilder text = new StringBuilder();
+            document.getParagraphs().forEach(paragraph -> {
+                text.append(paragraph.getText()).append("\n");
+            });
+            return text.toString();
+        }
     }
 }
