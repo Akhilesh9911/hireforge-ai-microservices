@@ -20,7 +20,7 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<Object
             String path = exchange.getRequest().getURI().getPath();
 
             // Public paths — token check mat karo
-            if (path.contains("/api/auth/register") || path.contains("/api/auth/login")) {
+            if (path.equals("/api/auth/register") || path.equals("/api/auth/login")) {
                 return chain.filter(exchange);
             }
 
