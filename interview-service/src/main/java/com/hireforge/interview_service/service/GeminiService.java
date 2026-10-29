@@ -85,7 +85,16 @@ public class GeminiService {
 
         Map response = restTemplate.postForObject(url, requestBody, Map.class);
 
+        if (response == null || response.get("candidates") == null) {
+            throw new IllegalStateException("Gemini returned no candidates");
+        }
+
         List<Map> candidates = (List<Map>) response.get("candidates");
+
+        if (candidates.isEmpty()) {
+            throw new IllegalStateException("Gemini returned no candidates");
+        }
+
         Map content = (Map) candidates.get(0).get("content");
         List<Map> parts = (List<Map>) content.get("parts");
         return (String) parts.get(0).get("text");
