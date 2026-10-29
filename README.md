@@ -141,7 +141,7 @@ Unit tests (JUnit 5 + Mockito) run automatically on every push to `main` via Git
 | resume-service | ResumeService | 6     | Resume analysis flow, ATS score parsing, per-user history |
 | resume-service | FileParserService | 6     | PDF/DOCX text extraction, unsupported and corrupt files |
 | api-gateway | JwtAuthenticationFilter | 7 | Public paths, missing/invalid token (401), X-User-Id injection, spoofed header overwrite |
-
+| interview-service | InterviewService | 6 | PDF/DOCX parsing hand-off to Gemini, unsupported/null file, Gemini failure, case-insensitive extension |
 **Total: 30 unit tests.**
 
 Run locally (inside a service folder):
