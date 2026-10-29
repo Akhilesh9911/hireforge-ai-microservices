@@ -140,8 +140,9 @@ Unit tests (JUnit 5 + Mockito) run automatically on every push to `main` via Git
 | auth-service | JwtUtil | 6     | Token generation, validation, expired, forged and malformed tokens |
 | resume-service | ResumeService | 6     | Resume analysis flow, ATS score parsing, per-user history |
 | resume-service | FileParserService | 6     | PDF/DOCX text extraction, unsupported and corrupt files |
+| api-gateway | JwtAuthenticationFilter | 7 | Public paths, missing/invalid token (401), X-User-Id injection, spoofed header overwrite |
 
-**Total: 23 unit tests.**
+**Total: 30 unit tests.**
 
 Run locally (inside a service folder):
 
