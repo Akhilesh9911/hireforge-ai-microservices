@@ -40,23 +40,23 @@ public class InterviewService {
 
     private String extractText(MultipartFile file) throws IOException {
         String filename = file.getOriginalFilename();
+        String lowerCaseName = filename == null ? "" : filename.toLowerCase();
 
-        if (filename != null && filename.endsWith(".pdf")) {
-            PDDocument document = org.apache.pdfbox.Loader.loadPDF(file.getBytes());
-            PDFTextStripper stripper = new PDFTextStripper();
-            String text = stripper.getText(document);
-            document.close();
-            return text;
+        if (lowerCaseName.endsWith(".pdf")) {
+            try (PDDocument document = org.apache.pdfbox.Loader.loadPDF(file.getBytes())) {
+                PDFTextStripper stripper = new PDFTextStripper();
+                return stripper.getText(document);
+            }
         }
 
-        if (filename != null && (filename.endsWith(".docx") || filename.endsWith(".doc"))) {
-            XWPFDocument document = new XWPFDocument(file.getInputStream());
-            StringBuilder text = new StringBuilder();
-            for (XWPFParagraph paragraph : document.getParagraphs()) {
-                text.append(paragraph.getText()).append("\n");
+        if (lowerCaseName.endsWith(".docx") || lowerCaseName.endsWith(".doc")) {
+            try (XWPFDocument document = new XWPFDocument(file.getInputStream())) {
+                StringBuilder text = new StringBuilder();
+                for (XWPFParagraph paragraph : document.getParagraphs()) {
+                    text.append(paragraph.getText()).append("\n");
+                }
+                return text.toString();
             }
-            document.close();
-            return text.toString();
         }
 
         throw new RuntimeException("Unsupported file format. Please upload PDF or DOCX.");
