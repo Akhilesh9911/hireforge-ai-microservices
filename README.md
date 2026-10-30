@@ -143,7 +143,8 @@ Unit tests (JUnit 5 + Mockito) run automatically on every push to `main` via Git
 | api-gateway | JwtAuthenticationFilter | 7 | Public paths, missing/invalid token (401), X-User-Id injection, spoofed header overwrite |
 | interview-service | InterviewService | 6 | PDF/DOCX parsing hand-off to Gemini, unsupported/null file, Gemini failure, case-insensitive extension |
 | interview-service | GeminiService | 4 | Response parsing, API key in URL, prompt contents, empty Gemini response handling |
-**Total: 40 unit tests.**
+| job-tracker-service | JobApplicationService | 9 | Ownership checks on get/update/delete, partial update, userId taken from header |
+**Total: 49 unit tests.**
 
 Run locally (inside a service folder):
 
