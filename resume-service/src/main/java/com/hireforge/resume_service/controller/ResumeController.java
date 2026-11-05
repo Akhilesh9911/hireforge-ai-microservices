@@ -2,11 +2,13 @@ package com.hireforge.resume_service.controller;
 
 import com.hireforge.resume_service.dto.ResumeAnalysisResponse;
 import com.hireforge.resume_service.service.ResumeService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/resume")
@@ -19,12 +21,17 @@ public class ResumeController {
     }
 
     @PostMapping("/analyze")
-    public ResponseEntity<ResumeAnalysisResponse> analyzeResume(
+    public ResponseEntity<?> analyzeResume(
             @RequestParam("file") MultipartFile file,
             @RequestHeader("X-User-Id") Long userId) throws IOException {
-
-        ResumeAnalysisResponse response = resumeService.analyzeResume(file, userId);
-        return ResponseEntity.ok(response);
+        try {
+            ResumeAnalysisResponse response = resumeService.analyzeResume(file, userId);
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(Map.of("error", e.getMessage()));
+        }
     }
 
     @GetMapping("/history")

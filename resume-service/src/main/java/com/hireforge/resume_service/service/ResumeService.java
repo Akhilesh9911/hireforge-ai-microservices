@@ -24,8 +24,11 @@ public class ResumeService {
     }
 
     public ResumeAnalysisResponse analyzeResume(MultipartFile file, Long userId) throws IOException {
+
+        String fileHash = org.springframework.util.DigestUtils.md5DigestAsHex(file.getBytes());
+
         String extractedText = fileParserService.extractText(file);
-        String geminiResponse = geminiService.analyzeResume(extractedText);
+        String geminiResponse = geminiService.analyzeResume(extractedText, fileHash);
         Integer atsScore = extractAtsScore(geminiResponse);
 
         ResumeAnalysis analysis = new ResumeAnalysis();

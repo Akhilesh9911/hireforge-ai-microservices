@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -55,7 +55,7 @@ class ResumeServiceTest {
         saved.setCreatedAt(createdAt);
 
         when(fileParserService.extractText(file)).thenReturn("resume text");
-        when(geminiService.analyzeResume("resume text")).thenReturn(geminiText);
+        when(geminiService.analyzeResume(eq("resume text"), anyString())).thenReturn(geminiText);
         when(repository.save(any(ResumeAnalysis.class))).thenReturn(saved);
 
         ResumeAnalysisResponse response = resumeService.analyzeResume(file, 5L);
@@ -81,7 +81,7 @@ class ResumeServiceTest {
         MockMultipartFile file = createFile();
 
         when(fileParserService.extractText(file)).thenReturn("resume text");
-        when(geminiService.analyzeResume("resume text")).thenReturn("## ATS Score: 85/100");
+        when(geminiService.analyzeResume(eq("resume text"), anyString())).thenReturn("## ATS Score: 85/100");
         when(repository.save(any(ResumeAnalysis.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
@@ -95,8 +95,7 @@ class ResumeServiceTest {
         MockMultipartFile file = createFile();
 
         when(fileParserService.extractText(file)).thenReturn("resume text");
-        when(geminiService.analyzeResume("resume text")).thenReturn("Something unexpected from AI");
-        when(repository.save(any(ResumeAnalysis.class)))
+        when(geminiService.analyzeResume(eq("resume text"), anyString())).thenReturn("Something unexpected from AI");        when(repository.save(any(ResumeAnalysis.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
         ResumeAnalysisResponse response = resumeService.analyzeResume(file, 5L);

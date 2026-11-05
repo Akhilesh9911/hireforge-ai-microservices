@@ -7,6 +7,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 import java.util.Map;
 import java.util.List;
+import org.springframework.cache.annotation.Cacheable;
 
 @Service
 public class GeminiService {
@@ -14,12 +15,17 @@ public class GeminiService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
+
+    public GeminiService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     private static final String GEMINI_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent";
 
-    public String analyzeResume(String resumeText) {
+    @Cacheable(value = "resumeAnalysis", key = "#fileHash")
+    public String analyzeResume(String resumeText,String fileHash) {
         String prompt = buildPrompt(resumeText);
         String url = GEMINI_URL + "?key=" + apiKey;
 
