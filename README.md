@@ -38,7 +38,7 @@ Gateway uses load-balanced routing (lb://SERVICE-NAME)
 | Eureka Server | 8761 | — | Service discovery and registry |
 | API Gateway | 8080 | — | JWT auth, routing, X-User-Id injection |
 | Auth Service | 8081 | hireforge_auth_db | Register, login, JWT token generation |
-| Resume Service | 8082 | hireforge_resume_db | PDF/DOCX parsing, ATS scoring via Gemini AI |
+| Resume Service | 8082 | hireforge_resume_db | PDF/DOCX parsing, ATS scoring via Gemini AI, Redis-cached results |
 | Job Tracker Service | 8083 | hireforge_job_db | CRUD for job applications with status tracking |
 | Interview Service | 8084 | hireforge_interview_db | AI-generated interview questions from resume + job role |
 
@@ -58,6 +58,7 @@ Gateway uses load-balanced routing (lb://SERVICE-NAME)
 - **Docker + Docker Compose** — containerized local development
 - **GitHub Actions** — CI/CD pipeline (Maven build + Docker build verify)
 - **RestTemplate** — Gemini API HTTP calls
+- **Spring Data Redis + Lettuce** — Resume analysis caching
 
 ---
 
@@ -140,11 +141,12 @@ Unit tests (JUnit 5 + Mockito) run automatically on every push to `main` via Git
 | auth-service | JwtUtil | 6     | Token generation, validation, expired, forged and malformed tokens |
 | resume-service | ResumeService | 6     | Resume analysis flow, ATS score parsing, per-user history |
 | resume-service | FileParserService | 6     | PDF/DOCX text extraction, unsupported and corrupt files |
+| resume-service | GeminiServiceCacheTest | 2 | Redis cache hit/miss — same fileHash skips Gemini call, different fileHash triggers new call |
 | api-gateway | JwtAuthenticationFilter | 7 | Public paths, missing/invalid token (401), X-User-Id injection, spoofed header overwrite |
 | interview-service | InterviewService | 6 | PDF/DOCX parsing hand-off to Gemini, unsupported/null file, Gemini failure, case-insensitive extension |
 | interview-service | GeminiService | 4 | Response parsing, API key in URL, prompt contents, empty Gemini response handling |
 | job-tracker-service | JobApplicationService | 9 | Ownership checks on get/update/delete, partial update, userId taken from header |
-**Total: 49 unit tests.**
+**Total: 51 unit tests.**
 
 Run locally (inside a service folder):
 
@@ -224,6 +226,7 @@ Databases are created automatically on first startup (`createDatabaseIfNotExist=
 | DB_USERNAME | MySQL username |
 | DB_PASSWORD | MySQL password |
 | GEMINI_API_KEY | Google Gemini API key |
+| REDIS_HOST | Redis hostname (default: localhost, Docker: redis) |
 
 ### Job Tracker Service
 | Variable | Description |
